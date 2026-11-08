@@ -1,0 +1,50 @@
+<div class="page">
+  <header class="hero">
+    <div class="pill">DAY 10 • FULL-STACK PRACTICE</div>
+    <h1>Student Dashboard</h1>
+    <p>Angular <span>→</span> Spring Boot <span>→</span> PostgreSQL</p>
+  </header>
+
+  <main class="content">
+    <section class="panel">
+      <div class="section-heading">
+        <div><h2>All Students</h2><p>These records come from the database, not hardcoded HTML.</p></div>
+        <button type="button" class="refresh" (click)="loadStudents()">↻ Refresh</button>
+      </div>
+
+      @if (loading()) {
+        <p class="muted">Loading students from the API...</p>
+      } @else if (students().length === 0) {
+        <p class="muted">No students found.</p>
+      } @else {
+        <div class="students">
+          @for (student of students(); track student.id) {
+            <article class="student">
+              <div class="avatar">{{ student.name.charAt(0).toUpperCase() }}</div>
+              <div class="student-info">
+                <h3>{{ student.name }}</h3>
+                <small>Student #{{ student.id }}</small>
+              </div>
+              <div class="grade">{{ student.grade }}<small>/100</small></div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+
+    <section class="panel form-panel">
+      <h2>Add a Student</h2>
+      <p>This form sends a POST request to Spring Boot.</p>
+      <form (ngSubmit)="addStudent()">
+        <label for="name">Student name</label>
+        <input id="name" type="text" name="name" [(ngModel)]="newName" maxlength="100" placeholder="e.g. Sara" required>
+        <label for="grade">Grade (0–100)</label>
+        <input id="grade" type="number" name="grade" [(ngModel)]="newGrade" min="0" max="100" step="1" placeholder="e.g. 93" required>
+        <button type="submit" class="submit">+ Add student</button>
+      </form>
+      @if (message()) { <p class="feedback" role="status">{{ message() }}</p> }
+      <div class="flow"><b>Data flow</b><span>Angular → HTTP API → Spring Boot → SQL → PostgreSQL</span></div>
+    </section>
+  </main>
+  <footer>Mini Student Dashboard • Learning project</footer>
+</div>
