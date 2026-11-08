@@ -1,132 +1,127 @@
-# Mini Student Dashboard — Day 10 (Angular + Spring Boot + PostgreSQL)
+# Student Dashboard – Day 10
 
-مشروع تعليمي بسيط: عرض الطلاب (GET) وإضافة طالب (POST). البيانات محفوظة فعلًا في PostgreSQL.
+## Project Overview
 
-## 0. الأدوات اللازمة
+A simple full-stack Student Dashboard developed as part of Day 10 of my internship training.
 
-- Java JDK 21: جرّبي `java -version`
-- PostgreSQL + pgAdmin أو psql
-- Maven: جرّبي `mvn -version` (لو ما عندك Maven: أنشئي مشروع backend من [start.spring.io](https://start.spring.io) لتحصلي على ملفات `mvnw` الرسمية، وانسخي ملفات هذا المجلد إليه)
-- Node.js متوافق مع Angular 21: Node 20.19+ أو 22.12+ أو 24+، و npm: جرّبي `node -v` و `npm -v`
-- VS Code
+The project demonstrates how Angular, Spring Boot, and PostgreSQL work together using REST APIs.
 
-## 1. اعملي قاعدة البيانات
+Users can view a list of students and add new students through the web interface.
 
-افتحي pgAdmin واختاري Databases > Create > Database، وسمّيها **student_demo** (بالحروف نفسها).
+## Technologies Used
 
-لا يلزم إنشاء جدول يدويًا: Spring Boot ينفّذ `schema.sql` و `data.sql` أول ما يشتغل.
+- **Frontend:** Angular, TypeScript, HTML, CSS
+- **Backend:** Java, Spring Boot
+- **Database:** PostgreSQL
+- **API:** REST API (HTTP GET and POST)
+- **Tools:** VS Code, Maven, npm, pgAdmin
 
-تأكدي إنه PostgreSQL شغال على port 5432. لو الـUsername مش `postgres` استخدمي `DB_USER`.
+## Project Structure
 
-## 2. شغّلي Backend
-
-افتحي Terminal داخل `student-backend`.
-
-**macOS / Linux:**
-
-```bash
-export DB_USER=postgres
-export DB_PASSWORD='YOUR_POSTGRES_PASSWORD'
-mvn spring-boot:run
+```text
+mini-student-dashboard/
+├── student-frontend/    # Angular application
+├── student-backend/     # Spring Boot application
+└── README.md
 ```
 
-**Windows PowerShell:**
+## Features
 
-```powershell
-$env:DB_USER="postgres"
-$env:DB_PASSWORD="YOUR_POSTGRES_PASSWORD"
-mvn spring-boot:run
+- Display students and their grades.
+- Add new students.
+- Fetch data using GET requests.
+- Send student data using POST requests.
+- Store student information in PostgreSQL.
+- Connect the frontend and backend through REST APIs.
+
+## How It Works
+
+1. The user interacts with the Angular frontend.
+2. Angular sends an HTTP request to the Spring Boot backend.
+3. Spring Boot processes the request and communicates with PostgreSQL.
+4. PostgreSQL stores or retrieves student data.
+5. Spring Boot returns an HTTP response.
+6. Angular displays the result to the user.
+
+**Request Flow:**
+
+Angular → Spring Boot → PostgreSQL → Spring Boot → Angular
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/students` | Retrieve all students |
+| POST | `/api/students` | Add a new student |
+
+### Example POST Request
+
+```json
+{
+  "name": "Jwan",
+  "grade": 95
+}
 ```
 
-استبدلي YOUR_POSTGRES_PASSWORD بكلمة مرور PostgreSQL الخاصة بجهازك. لا تكتبي كلمة المرور داخل الكود ولا ترفعيها على GitHub.
+## How to Run
 
-إذا أنتِ أصلًا بتستخدمي مستخدم مختلف (مثل jwanrajha) حطيه بدل postgres.
+### 1. Database Setup
 
-**اختبار:** افتحي `http://localhost:8080/api/students` لازم تشوفي JSON فيه Jwan وLina وMarwan.
+Install PostgreSQL and create a database named:
 
-إذا Backend رفض الاتصال بقاعدة البيانات: راجعي اسم database، username، password، port 5432.
+```sql
+CREATE DATABASE student_demo;
+```
 
-> ملاحظة: إذا ما عندك أمر `mvn` لكن عندك ملف `mvnw` من Spring Initializr، استخدمي `./mvnw spring-boot:run` على Mac/Linux أو `mvnw.cmd spring-boot:run` على Windows.
+Configure the backend's database connection using the appropriate environment variables, including `DB_USER` and `DB_PASSWORD`.
 
-## 3. شغّلي Frontend
+### 2. Run the Backend
 
-**افتحي Terminal جديد** داخل `student-frontend` (اتركي Backend شغالًا في الأول).
+Open a terminal in the `student-backend` directory:
 
 ```bash
+cd student-backend
+./mvnw spring-boot:run
+```
+
+Backend URL:
+
+`http://localhost:8080`
+
+Test the API:
+
+`http://localhost:8080/api/students`
+
+### 3. Run the Frontend
+
+Open another terminal:
+
+```bash
+cd student-frontend
 npm install
 npm start
 ```
 
-افتحي `http://localhost:4200`، المفروض تشوفي الطلاب الثلاثة. املئي الاسم والعلامة واضغطي Add student، ثم اضغطي Refresh وتأكدي إنه الطالب ما اختفى. ممكن تشوفيه أيضًا في pgAdmin:
+Frontend URL:
 
-```sql
-SELECT * FROM students ORDER BY id;
-```
+`http://localhost:4200`
 
-## 4. كيف بنعمل المشاريع من الصفر؟
+## Learning Outcomes
 
-### إنشاء Angular
+During Day 10, I learned and practiced:
 
-بـTerminal خارج المشروع، بعد تثبيت Angular CLI:
+- Understanding the frontend–backend–database flow.
+- Sending and receiving HTTP requests and responses.
+- Using GET and POST methods.
+- Working with JSON data.
+- Connecting Angular to Spring Boot REST APIs.
+- Understanding how PostgreSQL stores application data.
+- Testing the complete application integration.
 
-```bash
-npm install -g @angular/cli@21
-ng new student-frontend --routing=false --style=css
-```
+## Author
 
-الـCLI بيعمل Workspace جاهز. انسخي ملفات `src/app`, `src/main.ts`, `src/styles.css` من المشروع المرفق، وتأكدي من وجود `provideHttpClient()`، وشغلي `npm start`.
+**Jwan Salah Rajha**
 
-### إنشاء Spring Boot
+Computer Science Student – Birzeit University
 
-ادخلي [start.spring.io](https://start.spring.io):
-
-- Project: Maven
-- Language: Java
-- Spring Boot: 3.5.x (مستقر، إصدار المشروع المرفق 3.5.16)
-- Group: `com.example`
-- Artifact: `student-backend`
-- Package: `com.example.student`
-- Java: 21
-- Dependencies: **Spring Web**, **Spring JDBC**, **PostgreSQL Driver**
-
-اضغطي Generate، فكّي ZIP، وانسخي `StudentController.java`, `StudentBackendApplication.java` وملفات `application.properties`, `schema.sql`, `data.sql` من المشروع المرفق إلى نفس المسارات. وقتها شغليه باستخدام Maven Wrapper اللي بيولّده Spring Initializr.
-
-## 5. أهم الملفات — وليش؟
-
-- `student-frontend/src/app/app.html`: شكل صفحة الطلاب والفورم.
-- `student-frontend/src/app/app.ts`: طلب GET وPOST باستخدام Angular HttpClient.
-- `student-frontend/src/app/student.ts`: TypeScript interface لشكل بيانات الطالب.
-- `student-frontend/src/main.ts`: تشغيل Angular + توفير `provideHttpClient()`.
-- `student-backend/.../StudentController.java`: REST API endpoints.
-- `student-backend/.../application.properties`: معلومات الاتصال بقاعدة البيانات.
-- `student-backend/.../schema.sql`: إنشاء جدول students.
-- `student-backend/.../data.sql`: إدخال 3 طلاب مبدئيًا.
-- `student-backend/pom.xml`: مكتبات Spring Web وJDBC وPostgreSQL.
-
-## 6. تتبعي حركة البيانات
-
-**GET:** Angular (HttpClient GET) → Spring Boot (@GetMapping) → SQL SELECT → PostgreSQL → JSON → Angular تعرض الطلاب.
-
-**POST:** Angular form (HttpClient POST مع JSON) → Spring Boot (@PostMapping) → SQL INSERT → PostgreSQL → Student JSON → Angular تعرض الطالب الجديد.
-
-- `@RestController`: الClass بيرجع data عبر HTTP.
-- `@GetMapping`: التعامل مع GET.
-- `@PostMapping`: التعامل مع POST.
-- `JdbcTemplate`: تنفيذ SQL من Java.
-- `@CrossOrigin`: السماح لصفحة localhost:4200 بالاتصال على localhost:8080 من المتصفح.
-- `subscribe`: معالجة نتيجة HTTP أو الخطأ لما يوصل.
-- `signal`: متغير Angular تفاعلي لما يتغير بتتحدث الواجهة.
-- `[(ngModel)]`: ربط مدخلات المستخدم مع متغيرات الـComponent.
-
-## 7. أخطاء شائعة
-
-- CORS error: افحصي وجود `@CrossOrigin(origins = "http://localhost:4200")` على Controller.
-- 404 على `/api/students`: تأكدي إن Backend شغال والعنوان صحيح.
-- Database authentication failed: افحصي DB_USER و DB_PASSWORD.
-- `mvn: command not found`: ثبتي Maven أو استخدمي `mvnw` من المشروع المولد من Spring Initializr.
-- Angular connection refused: شغلي Backend قبل Frontend.
-- Node version unsupported: حدّثي Node.js لإصدار مناسب لـAngular 21.
-
-## تنبيه
-
-المشروع تعليمي وليس تطبيقًا إنتاجيًا: البيانات تجريبية، وواجهة الـAPI لا تحتوي على تسجيل دخول أو صلاحيات.
+Internship Training – Asal Technologies
